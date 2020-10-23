@@ -1,0 +1,3 @@
+include ':diagnostic_lib'
+include ':app'
+rootProject.name = "diagnostic_library"
