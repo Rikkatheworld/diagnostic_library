@@ -3,8 +3,7 @@ package com.example.diagnostic_library
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.diagnostic_lib.NetDiagnostic
-import com.example.diagnostic_lib.NetInfo
-import com.example.diagnostic_lib.NetStatus
+import com.example.diagnostic_lib.bean.NetResultInfo
 import com.example.diagnostic_lib.interfaces.DiagnosticListener
 import java.lang.Exception
 
@@ -41,11 +40,8 @@ class ResultInfoActivity : AppCompatActivity() {
 
     // 开始检测hostname
     private fun startDetect() {
-        NetDiagnostic().apply {
-            this.mContext = applicationContext
-            this.mDiagnosticListener = MyDiagnosticListener()
-            this.mDomain = hostname
-        }.startDiagnostic()
+        val diagnostic = NetDiagnostic(this, hostname, MyDiagnosticListener())
+        diagnostic.startDiagnostic()
     }
 
     // endregion
@@ -53,7 +49,7 @@ class ResultInfoActivity : AppCompatActivity() {
     // region class
 
     class MyDiagnosticListener : DiagnosticListener {
-        override fun onCompleted(result: NetInfo) {
+        override fun onCompleted(result: NetResultInfo) {
         }
 
         override fun onError(e: Exception, msg: String) {

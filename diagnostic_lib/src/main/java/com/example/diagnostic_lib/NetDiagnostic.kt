@@ -1,19 +1,28 @@
 package com.example.diagnostic_lib
 
 import android.content.Context
+import android.os.Looper
+import android.util.Log
+import com.example.diagnostic_lib.bean.NetResultInfo
 import com.example.diagnostic_lib.interfaces.DiagnosticListener
-import com.example.diagnostic_lib.services.BaseDiagnosticService
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
+import java.lang.Exception
 
 /**
  * 诊断库中心.
  *
+ * 开一个协程, Run 以DNS检测 -> ip Ping通 -> Socket RTT检测 -> TraceRoute检测的顺序
+ * 进行诊断, 如果中间某一阶段失败, 则中断整个流程, 并抛出异常
+ *
  * @author rikka
  * @date 2020/10/27
  */
-class NetDiagnostic {
+class NetDiagnostic(
+    private var mContext: Context,
+    mDomain: String = "",
+    private var mDiagnosticListener: DiagnosticListener
+) {
+
     // region companion
 
     companion object {
@@ -24,45 +33,62 @@ class NetDiagnostic {
 
     // region field
 
-    var mContext: Context? = null
+    private val mJob: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
-    var mDomain: String = ""
+    private var mNetResultInfo: NetResultInfo =
+        NetResultInfo()
+    // endregion
 
-    var mDiagnosticListener: DiagnosticListener? = null
+    // region init
 
-    private var mServiceList = mutableListOf<BaseDiagnosticService>()
+    init {
+        mNetResultInfo.domain = mDomain
+    }
 
-    private lateinit var mJob: CoroutineScope
     // endregion
 
     // region public
 
     /**
      * 开始诊断, 使用 [mJob] 去跑整个流程
+     * 为了简化, 必须在主线程中执行, 否则抛出异常
      */
     fun startDiagnostic() {
-        if (checkNecessaryInfoNoNull()) {
+        if (!checkInMainThread()) {
+            mDiagnosticListener.onError(Exception(), "diagnostic must started on MainThread")
             return
         }
-
-        val mJob = CoroutineScope(Dispatchers.Unconfined)
+        if (mJob.isActive) {
+            Log.d(TAG, "diagnostic job is running!")
+            return
+        }
+        mJob.launch() {
+            DiagnosticRunner(mNetResultInfo, mDiagnosticListener).run()
+        }
     }
-
-    private fun checkNecessaryInfoNoNull(): Boolean {
-        return true
-    }
-
 
     /**
      * 停止诊断, 使用 [mJob] 进行关闭
      */
     fun stopDiagnostic() {
-        mJob.cancel()
+        if (mJob.isActive) {
+            mJob.cancel()
+        } else {
+            return
+        }
     }
 
     // endregion
 
+
     // region private
+
+    private fun checkInMainThread(): Boolean {
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            return true
+        }
+        return false
+    }
 
     // endregion
 }
