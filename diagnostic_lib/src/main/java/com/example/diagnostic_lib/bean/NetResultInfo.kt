@@ -1,5 +1,6 @@
 package com.example.diagnostic_lib.bean
 
+import android.content.Context
 import com.example.diagnostic_lib.NetStatus
 
 /**
@@ -8,9 +9,10 @@ import com.example.diagnostic_lib.NetStatus
  * @author rikka
  * @date 2020/11/1
  */
-class NetResultInfo {
+class NetResultInfo(
+    val context: Context
+) {
     var netInfo: NetStatus? = null
     var domain: String = ""
     var resultList = mutableListOf<BaseDetectInfo>()
-
 }

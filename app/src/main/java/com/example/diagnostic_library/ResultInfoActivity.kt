@@ -2,6 +2,7 @@ package com.example.diagnostic_library
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.example.diagnostic_lib.NetDiagnostic
 import com.example.diagnostic_lib.bean.NetResultInfo
 import com.example.diagnostic_lib.interfaces.DiagnosticListener
@@ -18,6 +19,7 @@ class ResultInfoActivity : AppCompatActivity() {
     // region compaion
 
     companion object {
+        private const val TAG = "ResultInfoActivity"
         const val KEY_HOSTNAME = "key_hostname"
     }
 
@@ -53,6 +55,7 @@ class ResultInfoActivity : AppCompatActivity() {
         }
 
         override fun onError(e: Exception, msg: String) {
+            Log.d(TAG, "onError: e:$e msg:$msg")
         }
 
     }

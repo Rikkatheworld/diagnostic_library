@@ -22,8 +22,4 @@ open class BaseDetectInfo {
      */
     var totalDetectTime: Long = 0
 
-    /**
-     * 平均时长
-     */
-    var averageDetectTIme: Long = 0
 }

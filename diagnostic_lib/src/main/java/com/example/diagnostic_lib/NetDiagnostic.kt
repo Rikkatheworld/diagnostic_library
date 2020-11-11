@@ -33,10 +33,9 @@ class NetDiagnostic(
 
     // region field
 
-    private val mJob: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private lateinit var mJob: CoroutineScope
 
-    private var mNetResultInfo: NetResultInfo =
-        NetResultInfo()
+    private var mNetResultInfo: NetResultInfo = NetResultInfo(mContext)
     // endregion
 
     // region init
@@ -54,14 +53,12 @@ class NetDiagnostic(
      * 为了简化, 必须在主线程中执行, 否则抛出异常
      */
     fun startDiagnostic() {
+        Log.d(TAG, "startDiagnostic")
         if (!checkInMainThread()) {
             mDiagnosticListener.onError(Exception(), "diagnostic must started on MainThread")
             return
         }
-        if (mJob.isActive) {
-            Log.d(TAG, "diagnostic job is running!")
-            return
-        }
+        mJob = CoroutineScope(Dispatchers.IO)
         mJob.launch() {
             DiagnosticRunner(mNetResultInfo, mDiagnosticListener).run()
         }
@@ -71,7 +68,7 @@ class NetDiagnostic(
      * 停止诊断, 使用 [mJob] 进行关闭
      */
     fun stopDiagnostic() {
-        if (mJob.isActive) {
+        if (mJob != null && mJob.isActive) {
             mJob.cancel()
         } else {
             return
