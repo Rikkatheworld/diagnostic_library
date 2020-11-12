@@ -13,6 +13,11 @@ class TimeUtils {
 
     companion object {
 
+        /**
+         * 用于记录间隔的时间, 所以不使用[System.currentTimeMillis]
+         *
+         * @return
+         */
         @JvmStatic
         fun getCurrentTime(): Long {
             return SystemClock.elapsedRealtimeNanos()

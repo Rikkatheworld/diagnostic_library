@@ -1,8 +1,8 @@
-package com.example.diagnostic_lib.services
+package com.example.diagnostic_lib.services.Ping
 
 import com.example.diagnostic_lib.bean.BaseDetectInfo
 import com.example.diagnostic_lib.bean.NetResultInfo
-import com.example.diagnostic_lib.services.base.BaseDiagnosticService
+import com.example.diagnostic_lib.services.BaseDiagnosticService
 
 /**
  * Ping ip检测.
@@ -23,22 +23,10 @@ class PingDiagnosticService(mNetResultInfo: NetResultInfo) : BaseDiagnosticServi
     // region override
 
     override fun doDetect(): BaseDetectInfo {
-        return BaseDetectInfo()
+        return PingDetectInfo()
     }
 
     override fun getTag(): String = TAG
-
-    // endregion
-
-    // region inner class
-
-    /**
-     * 承载Ping的检测信息
-     *
-     */
-    class PingDetectInfo: BaseDetectInfo() {
-
-    }
 
     // endregion
 

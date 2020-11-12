@@ -6,7 +6,7 @@ package com.example.diagnostic_lib.bean
  * @author rikka
  * @date 2020/11/7
  */
-open class BaseDetectInfo {
+abstract class BaseDetectInfo {
     /**
      * 表示测试的阶段
      */
@@ -22,4 +22,10 @@ open class BaseDetectInfo {
      */
     var totalDetectTime: Long = 0
 
+    /**
+     * 打印结果, 供页面查看
+     *
+     * @return
+     */
+    abstract fun printStep(): String
 }

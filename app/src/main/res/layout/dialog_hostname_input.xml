@@ -8,6 +8,7 @@
         android:id="@+id/et_hostname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="www.baidu.com"
         android:hint="请输入域名"
         android:maxLines="1"
         app:layout_constraintStart_toStartOf="parent"

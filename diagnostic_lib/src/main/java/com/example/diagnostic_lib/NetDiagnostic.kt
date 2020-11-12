@@ -33,7 +33,7 @@ class NetDiagnostic(
 
     // region field
 
-    private lateinit var mJob: CoroutineScope
+    private var mJob: CoroutineScope? = null
 
     private var mNetResultInfo: NetResultInfo = NetResultInfo(mContext)
     // endregion
@@ -59,7 +59,7 @@ class NetDiagnostic(
             return
         }
         mJob = CoroutineScope(Dispatchers.IO)
-        mJob.launch() {
+        mJob?.launch() {
             DiagnosticRunner(mNetResultInfo, mDiagnosticListener).run()
         }
     }
@@ -68,11 +68,7 @@ class NetDiagnostic(
      * 停止诊断, 使用 [mJob] 进行关闭
      */
     fun stopDiagnostic() {
-        if (mJob != null && mJob.isActive) {
-            mJob.cancel()
-        } else {
-            return
-        }
+        mJob?.cancel()
     }
 
     // endregion

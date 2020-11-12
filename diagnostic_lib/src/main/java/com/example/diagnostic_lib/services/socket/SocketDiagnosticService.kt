@@ -1,8 +1,8 @@
-package com.example.diagnostic_lib.services
+package com.example.diagnostic_lib.services.socket
 
 import com.example.diagnostic_lib.bean.BaseDetectInfo
 import com.example.diagnostic_lib.bean.NetResultInfo
-import com.example.diagnostic_lib.services.base.BaseDiagnosticService
+import com.example.diagnostic_lib.services.BaseDiagnosticService
 
 /**
  * Socket rtt检测.
@@ -23,21 +23,11 @@ class SocketDiagnosticService(mNetResultInfo: NetResultInfo) : BaseDiagnosticSer
     // region override
 
     override fun doDetect(): BaseDetectInfo {
-        return BaseDetectInfo()
+        return SocketDetectInfo()
     }
 
     override fun getTag(): String = TAG
 
     // endregion
 
-    // region inner class
-
-    /**
-     * 承载Socket检测信息
-     *
-     */
-    class SocketDetectInfo: BaseDetectInfo() {
-
-    }
-    // endregion
 }

@@ -1,4 +1,4 @@
-package com.example.diagnostic_lib.services.base
+package com.example.diagnostic_lib.services
 
 import android.util.Log
 import com.example.diagnostic_lib.bean.BaseDetectInfo

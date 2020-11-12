@@ -26,4 +26,11 @@ interface DiagnosticListener {
      * @param msg
      */
     fun onError(e: Exception, msg: String)
+
+    /**
+     * 实时返回检测的数据, 以String表示
+     *
+     * @param s
+     */
+    fun onProceed(s: String)
 }

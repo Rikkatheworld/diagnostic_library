@@ -1,8 +1,8 @@
-package com.example.diagnostic_lib.services
+package com.example.diagnostic_lib.services.traceroute
 
 import com.example.diagnostic_lib.bean.BaseDetectInfo
 import com.example.diagnostic_lib.bean.NetResultInfo
-import com.example.diagnostic_lib.services.base.BaseDiagnosticService
+import com.example.diagnostic_lib.services.BaseDiagnosticService
 
 /**
  * TraceRoute 检测.
@@ -22,23 +22,13 @@ class TraceRouteDiagnosticService(mNetResultInfo: NetResultInfo) : BaseDiagnosti
     // region override
 
     override fun doDetect(): BaseDetectInfo {
-        return BaseDetectInfo()
+        return TraceRouteDetectInfo()
     }
 
-    override fun getTag(): String = TAG
+    override fun getTag(): String =
+        TAG
 
     // endregion
 
 
-    // region inner class
-
-    /**
-     * 承载TraceRoute检测信息
-     *
-     */
-    class TraceRouteDetectInfo: BaseDetectInfo() {
-
-    }
-
-    // endregion
 }

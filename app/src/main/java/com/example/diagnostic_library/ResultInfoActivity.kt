@@ -3,6 +3,7 @@ package com.example.diagnostic_library
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.TextView
 import com.example.diagnostic_lib.NetDiagnostic
 import com.example.diagnostic_lib.bean.NetResultInfo
 import com.example.diagnostic_lib.interfaces.DiagnosticListener
@@ -12,7 +13,9 @@ class ResultInfoActivity : AppCompatActivity() {
 
     // region field
 
-    lateinit var hostname: String
+    lateinit var mHostName: String
+
+    var mResultTextView: TextView? = null
 
     // endregion
 
@@ -31,8 +34,8 @@ class ResultInfoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result_info)
 
-        hostname = intent.getStringExtra(KEY_HOSTNAME) ?: return
-
+        mHostName = intent.getStringExtra(KEY_HOSTNAME) ?: return
+        mResultTextView = findViewById(R.id.detect_result)
         startDetect()
     }
 
@@ -42,23 +45,27 @@ class ResultInfoActivity : AppCompatActivity() {
 
     // 开始检测hostname
     private fun startDetect() {
-        val diagnostic = NetDiagnostic(this, hostname, MyDiagnosticListener())
+        val diagnostic = NetDiagnostic(this, mHostName, object : DiagnosticListener {
+            override fun onCompleted(result: NetResultInfo) {
+            }
+
+            override fun onError(e: Exception, msg: String) {
+                Log.d(TAG, "onError: e:$e msg:$msg")
+                runOnUiThread {
+                    mResultTextView?.append(msg)
+                }
+            }
+
+            override fun onProceed(s: String) {
+                Log.d(TAG, "onProceed: $s ")
+                runOnUiThread {
+                    mResultTextView?.append(s)
+                }
+            }
+        })
         diagnostic.startDiagnostic()
     }
 
     // endregion
 
-    // region class
-
-    class MyDiagnosticListener : DiagnosticListener {
-        override fun onCompleted(result: NetResultInfo) {
-        }
-
-        override fun onError(e: Exception, msg: String) {
-            Log.d(TAG, "onError: e:$e msg:$msg")
-        }
-
-    }
-
-    // endregion
 }

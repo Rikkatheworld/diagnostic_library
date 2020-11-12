@@ -2,9 +2,11 @@ package com.example.diagnostic_lib
 
 import com.example.diagnostic_lib.bean.NetResultInfo
 import com.example.diagnostic_lib.interfaces.DiagnosticListener
-import com.example.diagnostic_lib.services.*
-import com.example.diagnostic_lib.services.base.BaseDiagnosticService
+import com.example.diagnostic_lib.services.Ping.PingDiagnosticService
+import com.example.diagnostic_lib.services.BaseDiagnosticService
 import com.example.diagnostic_lib.services.dns.DnsDiagnosticService
+import com.example.diagnostic_lib.services.socket.SocketDiagnosticService
+import com.example.diagnostic_lib.services.traceroute.TraceRouteDiagnosticService
 import java.lang.Exception
 
 /**
@@ -40,7 +42,17 @@ class DiagnosticRunner(
 
         try {
             for (i in 0 until mServiceList.size) {
+                mDiagnosticListener.onProceed("${mServiceList[i].getTag()} start... \n")
                 mServiceList[i].startService()
+
+                val resultString = if (mNetResultInfo.resultList.size == 0) {
+                    "empty"
+                } else {
+                    mNetResultInfo.resultList[mNetResultInfo.resultList.size - 1].toString()
+                }
+                mDiagnosticListener.onProceed(
+                    "${mServiceList[i].getTag()} Finish, result:$resultString} \n"
+                )
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -57,9 +69,21 @@ class DiagnosticRunner(
     private fun addElement() {
         mServiceList.clear()
         mServiceList.add(DnsDiagnosticService(mNetResultInfo))
-        mServiceList.add(PingDiagnosticService(mNetResultInfo))
-        mServiceList.add(SocketDiagnosticService(mNetResultInfo))
-        mServiceList.add(TraceRouteDiagnosticService(mNetResultInfo))
+        mServiceList.add(
+            PingDiagnosticService(
+                mNetResultInfo
+            )
+        )
+        mServiceList.add(
+            SocketDiagnosticService(
+                mNetResultInfo
+            )
+        )
+        mServiceList.add(
+            TraceRouteDiagnosticService(
+                mNetResultInfo
+            )
+        )
     }
 
     // endregion
