@@ -15,4 +15,6 @@ class NetResultInfo(
     var netInfo: NetStatus? = null
     var domain: String = ""
     var resultList = mutableListOf<BaseDetectInfo>()
+    var startTime: Long = 0
+    var totalTime: Long = 0
 }

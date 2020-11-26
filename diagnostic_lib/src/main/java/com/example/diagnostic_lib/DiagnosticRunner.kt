@@ -5,6 +5,7 @@ import com.example.diagnostic_lib.interfaces.DiagnosticListener
 import com.example.diagnostic_lib.services.Ping.PingDiagnosticService
 import com.example.diagnostic_lib.services.BaseDiagnosticService
 import com.example.diagnostic_lib.services.dns.DnsDiagnosticService
+import com.example.diagnostic_lib.services.net.NetDiagnosticService
 import com.example.diagnostic_lib.services.socket.SocketDiagnosticService
 import com.example.diagnostic_lib.services.traceroute.TraceRouteDiagnosticService
 import java.lang.Exception
@@ -48,7 +49,7 @@ class DiagnosticRunner(
                 val resultString = if (mNetResultInfo.resultList.size == 0) {
                     "empty"
                 } else {
-                    mNetResultInfo.resultList[mNetResultInfo.resultList.size - 1].toString()
+                    mNetResultInfo.resultList[i].toString()
                 }
                 mDiagnosticListener.onProceed(
                     "${mServiceList[i].getTag()} Finish, result:$resultString} \n"
@@ -68,22 +69,11 @@ class DiagnosticRunner(
 
     private fun addElement() {
         mServiceList.clear()
+        mServiceList.add(NetDiagnosticService(mNetResultInfo))
         mServiceList.add(DnsDiagnosticService(mNetResultInfo))
-        mServiceList.add(
-            PingDiagnosticService(
-                mNetResultInfo
-            )
-        )
-        mServiceList.add(
-            SocketDiagnosticService(
-                mNetResultInfo
-            )
-        )
-        mServiceList.add(
-            TraceRouteDiagnosticService(
-                mNetResultInfo
-            )
-        )
+        mServiceList.add(PingDiagnosticService(mNetResultInfo))
+        mServiceList.add(SocketDiagnosticService(mNetResultInfo))
+        mServiceList.add(TraceRouteDiagnosticService(mNetResultInfo))
     }
 
     // endregion
